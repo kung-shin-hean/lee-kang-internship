@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lee Kang @ Kurechii — Internship Plan</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #f97316;
+      --orange-light: #fff7ed;
+      --orange-border: #fed7aa;
+      --grey-bg: #f9fafb;
+      --grey-muted: #6b7280;
+      --grey-border: #e5e7eb;
+      --text: #111827;
+      --text-light: #374151;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --green-border: #bbf7d0;
+      --blue-light: #eff6ff;
+      --blue-border: #bfdbfe;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+
+    /* ── Header ── */
+    header {
+      background: var(--text);
+      color: #fff;
+      padding: 40px 20px 32px;
+      margin-bottom: 32px;
+    }
+    .header-inner { max-width: 900px; margin: 0 auto; }
+    header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+    header .subtitle { color: #d1d5db; font-size: 0.9rem; margin-bottom: 20px; }
+    .week-badge {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .progress-seg {
+      flex: 1;
+      min-width: 20px;
+      height: 8px;
+      border-radius: 4px;
+      background: #374151;
+    }
+    .progress-seg.done { background: #6b7280; }
+    .progress-seg.current { background: var(--orange); }
+    .progress-seg.upcoming { background: #374151; }
+
+    /* ── Section headers ── */
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 36px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--grey-border);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── This Week card ── */
+    .this-week-card {
+      background: var(--orange-light);
+      border: 1px solid var(--orange-border);
+      border-left: 4px solid var(--orange);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 8px;
+    }
+    .this-week-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+    .this-week-card .tw-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .tw-item label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--grey-muted);
+      margin-bottom: 4px;
+    }
+    .tw-item p { font-size: 0.9rem; color: var(--text-light); }
+
+    /* ── Game Concept card ── */
+    .concept-card {
+      border: 1px solid var(--grey-border);
+      border-radius: 8px;
+      padding: 20px 24px;
+    }
+    .concept-card.approved {
+      background: var(--green-light);
+      border-color: var(--green-border);
+    }
+    .concept-card .concept-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .concept-card h3 { font-size: 1rem; font-weight: 700; }
+    .status-pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .pill-pending { background: #fef3c7; color: #92400e; }
+    .pill-approved { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .pill-inprogress { background: var(--orange-light); color: #c2410c; border: 1px solid var(--orange-border); }
+    .pill-done { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+    .criteria-list { list-style: none; }
+    .criteria-list li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+      font-size: 0.9rem;
+      color: var(--text-light);
+      border-bottom: 1px solid var(--grey-border);
+    }
+    .criteria-list li:last-child { border-bottom: none; }
+    .criteria-list li::before {
+      content: "○";
+      position: absolute;
+      left: 0;
+      color: var(--grey-muted);
+      font-size: 0.75rem;
+      top: 8px;
+    }
+    .concept-card.approved .criteria-list li::before { content: "✓"; color: var(--green); }
+
+    /* ── Schedule table ── */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    th {
+      background: var(--grey-bg);
+      text-align: left;
+      padding: 10px 12px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--grey-muted);
+      border-bottom: 2px solid var(--grey-border);
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--grey-border);
+      vertical-align: top;
+    }
+    tr.row-done td { color: #9ca3af; background: #fafafa; }
+    tr.row-current td { background: var(--orange-light); }
+    tr.row-current td:first-child { border-left: 3px solid var(--orange); }
+    .you-are-here {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--orange);
+      background: #fff;
+      border: 1px solid var(--orange-border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      white-space: nowrap;
+    }
+
+    /* ── UPM Deliverable cards ── */
+    .upm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .upm-card {
+      border: 1px solid var(--grey-border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+    .upm-card.status-inprogress {
+      border-color: var(--orange-border);
+      background: var(--orange-light);
+    }
+    .upm-card.status-done {
+      border-color: var(--green-border);
+      background: var(--green-light);
+      opacity: 0.85;
+    }
+    .upm-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .upm-card h3 { font-size: 0.95rem; font-weight: 700; }
+    .upm-week { font-size: 0.75rem; color: var(--grey-muted); margin-bottom: 8px; }
+    .upm-why {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .upm-scope { list-style: none; margin-bottom: 10px; }
+    .upm-scope li {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      padding: 2px 0 2px 14px;
+      position: relative;
+    }
+    .upm-scope li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+      color: var(--grey-muted);
+    }
+    .upm-exit {
+      font-size: 0.78rem;
+      color: var(--grey-muted);
+      border-top: 1px solid var(--grey-border);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .upm-exit strong { color: var(--text-light); }
+
+    /* ── Graduation signals ── */
+    .grad-list { list-style: none; }
+    .grad-list li {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--grey-border);
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    .grad-list li:last-child { border-bottom: none; }
+    .grad-num {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--grey-bg);
+      border: 1px solid var(--grey-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--grey-muted);
+      margin-top: 1px;
+    }
+
+    /* ── Standards collapsible ── */
+    details {
+      border: 1px solid var(--grey-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    summary {
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: var(--grey-bg);
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before {
+      content: "▶";
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+    }
+    details[open] summary::before { transform: rotate(90deg); }
+    .standards-body { padding: 18px 20px; }
+    .standards-body h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--grey-muted);
+      margin: 16px 0 8px;
+    }
+    .standards-body h4:first-child { margin-top: 0; }
+    .standards-body ul { list-style: none; }
+    .standards-body ul li {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      padding: 4px 0 4px 16px;
+      position: relative;
+      border-bottom: 1px solid var(--grey-border);
+    }
+    .standards-body ul li:last-child { border-bottom: none; }
+    .standards-body ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--grey-muted);
+      font-size: 0.75rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--grey-border);
+      font-size: 0.8rem;
+      color: var(--grey-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 28px 16px 24px; }
+      header h1 { font-size: 1.25rem; }
+      .upm-grid { grid-template-columns: 1fr; }
+      td, th { padding: 8px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  // ── TD updates these to advance progress ──────────────────────────────────
+  const CURRENT_WEEK = 1;
+  const GAME_CONCEPT_APPROVED = false;
+  const UCB_GREEN = false;
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const TOTAL_WEEKS = 13;
+
+  const WEEKS = [
+    {
+      week: 1,
+      dates: "Jun 8–14",
+      activity: "Onboarding",
+      output: "—",
+      lucian: "Onboard Lee Kang. Daily proactive check-in. Brief KPI #3 starts now.",
+      td: "Standup intro. Brief Lucian. 20-min Friday retro.",
+      detail: {
+        focus: "Welcome, environment, and orientation",
+        goal: "Environment ready, team context absorbed, first task submitted",
+        days: [
+          { day: "Mon Jun 8", owner: "TD", tasks: "Standup intro · Admin setup (email, GitHub, Chat) · Hand onboarding checklist · Lucian 1-on-1 · Play Kurechii games · Read Engineering Philosophy · Assign Pragmatic Programmer §1" },
+          { day: "Tue Jun 9", owner: "Lucian", tasks: "Unity Hub + Editor install · Rider + Fork setup · Clone UPM repo · Walk through one existing UPM (read-only) · Start Atlassian Git tutorial" },
+          { day: "Wed Jun 10", owner: "Lucian", tasks: "Explain Standard Task Workflow · Assign first task: write Git pull guide (markdown, clear enough for a non-dev) · TD informal 10-min check-in" },
+          { day: "Thu Jun 11", owner: "Lucian", tasks: "Lee Kang submits first draft · Lucian reviews with Conventional Comments · Lee Kang revises · 1-hr pair: walk through one UPM package together" },
+          { day: "Fri Jun 12", owner: "TD", tasks: "Lee Kang submits final doc · TD 20-min Week 1 retro (4 questions + Pragmatic Programmer check + game empathy check) · TD 10-min Lucian check-in · Set Week 2 goal" },
+        ]
+      }
+    },
+    { week: 2, dates: "Jun 15–19", activity: "UPM inventory + game concept", output: "UPM inventory doc. Game concept one-pager submitted.", lucian: "Approve game concept by end of week.", td: "Spot-check UPM inventory. Approve concept." },
+    { week: 3, dates: "Jun 22–26", activity: "Hello World UPM (Mon–Tue) → Screenshot TDN (Wed–Fri)", output: "Working local package + TDN approved", lucian: "Show package structure once (30 min). Gate: approve TDN before coding.", td: "—" },
+    { week: 4, dates: "Jun 29–Jul 3", activity: "UPM 1: Build", output: "ScreenshotManager + config working, sample scene", lucian: "Async unblock + end-of-week PR review", td: "—" },
+    { week: 5, dates: "Jul 6–10", activity: "UPM 1: Integrate + UCB setup + UPM 2 TDN", output: "UPM 1 on git URL, merged (F12 hotkey). UCB Windows build green. UPM 2 TDN written.", lucian: "Approve UPM 1 PR. Review UPM 2 TDN. Confirm UCB build.", td: "~15 min async read of UPM 2 TDN" },
+    { week: 6, dates: "Jul 13–17", activity: "UPM 2: Toast widget", output: "Mini-PR #1", lucian: "Review Toast PR", td: "—" },
+    { week: 7, dates: "Jul 20–24", activity: "UPM 2: Dialog + Loading", output: "Mini-PRs #2 and #3", lucian: "Review both PRs", td: "—" },
+    { week: 8, dates: "Jul 27–31", activity: "UPM 2: Integrate", output: "All 3 widgets in game. UPM 2 merged. UCB still green.", lucian: "Confirm integration, approve final PR", td: "—" },
+    { week: 9, dates: "Aug 3–7", activity: "UPM 3: TDN write + review", output: "TDN approved (must name all UPM deps + failure modes)", lucian: "Gate: confirm Lee Kang has read APIs of game save, analytics, game service", td: "~20 min spot-check of UPM 3 TDN" },
+    { week: 10, dates: "Aug 10–14", activity: "UPM 3: Core build", output: "AchievementSystem + persistence working", lucian: "Async unblock on game save UPM questions", td: "—" },
+    { week: 11, dates: "Aug 17–21", activity: "UPM 3: Bridges + Editor", output: "Steam bridge, analytics hook, toast integration, EditorWindow", lucian: "PR review: event cleanup, null safety, optional bridge", td: "—" },
+    { week: 12, dates: "Aug 24–28", activity: "UPM 3: Integrate + polish", output: "3 achievements working, profiling pass done, UCB green", lucian: "Final UPM 3 PR review. Help scope demo.", td: "30-min code review session with Lee Kang" },
+    { week: 13, dates: "Aug 31–Sep 7", activity: "Demo prep + final demo", output: "ARCHITECTURE.md + 15-min team demo + downloadable UCB build", lucian: "Help structure demo narrative", td: "Attend demo. Debrief with Lucian on mentoring quality." },
+  ];
+
+  const UPM_DELIVERABLES = [
+    {
+      id: "step0",
+      title: "Step 0 — Hello World UPM",
+      weeks: "Week 3 (Mon–Tue)",
+      weekRange: [3, 3],
+      why: "Learn the physical structure of a UPM package before building anything useful.",
+      scope: [
+        "package.json, Runtime/ folder, .asmdef, README.md",
+        "HelloWorld.cs MonoBehaviour — configurable greeting in Inspector",
+        "Install via local package reference in manifest.json",
+        "Lee Kang explains each file back to Lucian",
+      ],
+      exit: "Lee Kang creates and installs a new local UPM from scratch without help, and explains in writing what package.json and .asmdef each do."
+    },
+    {
+      id: "upm1",
+      title: "UPM 1 — Screenshot",
+      weeks: "Weeks 3–5",
+      weekRange: [3, 5],
+      why: "Single responsibility, zero backend, visible result. Teaches package anatomy, singleton lifecycle, ScriptableObject config, and platform file I/O.",
+      scope: [
+        "ScreenshotManager singleton — Capture() and CaptureWithFilename()",
+        "ScreenshotConfig ScriptableObject — save path, filename format, hotkey",
+        "Optional toast notification on capture (falls back to Debug.Log)",
+        "F12 hotkey in game — validates toast hook once UPM 2 is built",
+        "TDN required before coding (Lucian approves)",
+      ],
+      exit: "UPM 1 merged into game via git URL. F12 saves a PNG. UCB Windows build green."
+    },
+    {
+      id: "ucb",
+      title: "UCB Setup",
+      weeks: "Week 5 (~2 days)",
+      weekRange: [5, 5],
+      why: "From Week 5 onward, every UPM merge is validated by a real Windows IL2CPP build — not just 'works in editor'.",
+      scope: [
+        "Create UCB project, Windows Standalone target, IL2CPP backend",
+        "Move UPM references from local file paths to git URLs",
+        "Confirm first green build with Screenshot UPM integrated",
+        "link.xml stub to prevent IL2CPP stripping",
+      ],
+      exit: "UCB produces a downloadable Windows build. Lee Kang documents the build URL and any IL2CPP issues."
+    },
+    {
+      id: "upm2",
+      title: "UPM 2 — Common UI Widgets",
+      weeks: "Weeks 6–8",
+      weekRange: [6, 8],
+      why: "High reuse across every future Kurechii game. Teaches runtime-configurable prefabs, C# Action callbacks, and UI decoupling.",
+      scope: [
+        "Toast/notification banner — auto-dismisses, queues if multiple fire",
+        "Confirmation dialog — Title + body + Confirm/Cancel with Action callbacks",
+        "Loading screen overlay — fullscreen spinner, caller controls show/hide",
+        "Each widget: prefab + controller + ScriptableObject config + sample scene",
+        "3 mini-PRs (one per widget) — TDN required before coding",
+      ],
+      exit: "All 3 widgets integrated in game. UPM 2 merged. UCB still green."
+    },
+    {
+      id: "upm3",
+      title: "UPM 3 — Achievement System",
+      weeks: "Weeks 9–12",
+      weekRange: [9, 12],
+      why: "First cross-system UPM — consumes game save, analytics, and game service UPMs. Teaches event-driven architecture and optional dependency pattern.",
+      scope: [
+        "AchievementDefinition ScriptableObject — id, name, description, icon, hidden flag",
+        "AchievementRegistry ScriptableObject — one per game, not hardcoded",
+        "AchievementSystem singleton — Unlock(), IsUnlocked(), GetAll(), OnAchievementUnlocked event",
+        "Persistence via game save UPM",
+        "Steam sync via game service UPM (optional, fails gracefully)",
+        "Analytics event on unlock (optional, fails gracefully)",
+        "Toast on unlock via UPM 2 (optional, fails gracefully)",
+        "EditorWindow — lists all achievements + unlocked state for testing",
+        "TDN must name all UPM dependencies and failure modes",
+      ],
+      exit: "3 achievements in game, profiling pass done, UCB green. 30-min TD code review."
+    },
+  ];
+
+  // Derive UPM status from current week
+  function getUpmStatus(upm) {
+    const [start, end] = upm.weekRange;
+    if (upm.id === "ucb" && UCB_GREEN) return "done";
+    if (CURRENT_WEEK > end) return "done";
+    if (CURRENT_WEEK >= start) return "inprogress";
+    return "pending";
+  }
+
+  // Derive schedule row class
+  function getRowClass(w) {
+    if (w < CURRENT_WEEK) return "row-done";
+    if (w === CURRENT_WEEK) return "row-current";
+    return "";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    renderHeader();
+    renderThisWeek();
+    renderGameConcept();
+    renderSchedule();
+    renderUpmDeliverables();
+    renderGraduationSignals();
+  });
+
+  function renderHeader() {
+    const badge = document.getElementById("week-badge");
+    badge.textContent = `Week ${CURRENT_WEEK} of ${TOTAL_WEEKS}`;
+
+    const bar = document.getElementById("progress-bar");
+    bar.innerHTML = "";
+    for (let i = 1; i <= TOTAL_WEEKS; i++) {
+      const seg = document.createElement("div");
+      seg.className = "progress-seg " + (i < CURRENT_WEEK ? "done" : i === CURRENT_WEEK ? "current" : "upcoming");
+      bar.appendChild(seg);
+    }
+  }
+
+  function renderThisWeek() {
+    const wk = WEEKS.find(w => w.week === CURRENT_WEEK) || WEEKS[0];
+    const card = document.getElementById("this-week-card");
+
+    if (wk.week === 1 && wk.detail) {
+      const dayRows = wk.detail.days.map(d =>
+        `<tr>
+          <td style="font-size:0.82rem;font-weight:700;white-space:nowrap;padding:7px 10px">${d.day}</td>
+          <td style="font-size:0.75rem;color:var(--grey-muted);padding:7px 10px">${d.owner}</td>
+          <td style="font-size:0.82rem;padding:7px 10px;color:var(--text-light)">${d.tasks}</td>
+        </tr>`
+      ).join("");
+
+      card.innerHTML = `
+        <h3>Week ${wk.week}: ${wk.activity}</h3>
+        <p style="font-size:0.88rem;color:var(--text-light);margin-bottom:14px"><strong>Goal:</strong> ${wk.detail.goal}</p>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr>
+                <th style="text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--grey-muted);padding:6px 10px;border-bottom:2px solid var(--orange-border);background:rgba(249,115,22,0.06)">Day</th>
+                <th style="text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--grey-muted);padding:6px 10px;border-bottom:2px solid var(--orange-border);background:rgba(249,115,22,0.06)">Owner</th>
+                <th style="text-align:left;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--grey-muted);padding:6px 10px;border-bottom:2px solid var(--orange-border);background:rgba(249,115,22,0.06)">Tasks</th>
+              </tr>
+            </thead>
+            <tbody>${dayRows}</tbody>
+          </table>
+        </div>
+        <div class="tw-grid" style="margin-top:16px">
+          <div class="tw-item"><label>Lucian</label><p>${wk.lucian}</p></div>
+          <div class="tw-item"><label>TD</label><p>${wk.td}</p></div>
+          <div class="tw-item"><label>Output</label><p>${wk.output}</p></div>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <h3>Week ${wk.week}: ${wk.activity}</h3>
+        <div class="tw-grid">
+          <div class="tw-item"><label>Dates</label><p>${wk.dates}</p></div>
+          <div class="tw-item"><label>Output</label><p>${wk.output}</p></div>
+          <div class="tw-item"><label>Lucian</label><p>${wk.lucian}</p></div>
+          <div class="tw-item"><label>TD</label><p>${wk.td}</p></div>
+        </div>
+      `;
+    }
+  }
+
+  function renderGameConcept() {
+    const card = document.getElementById("concept-card");
+    const pill = document.getElementById("concept-pill");
+    if (GAME_CONCEPT_APPROVED) {
+      card.classList.add("approved");
+      pill.className = "status-pill pill-approved";
+      pill.textContent = "Approved";
+    } else {
+      pill.className = "status-pill pill-pending";
+      pill.textContent = "Pending";
+    }
+    const markers = card.querySelectorAll(".criteria-list li");
+    // markers styled via CSS — no JS needed
+  }
+
+  function renderSchedule() {
+    const tbody = document.getElementById("schedule-tbody");
+    tbody.innerHTML = "";
+    WEEKS.forEach(wk => {
+      const cls = getRowClass(wk.week);
+      const isCurrentWeek = wk.week === CURRENT_WEEK;
+      const tr = document.createElement("tr");
+      if (cls) tr.className = cls;
+      tr.innerHTML = `
+        <td><strong>${wk.week}</strong>${isCurrentWeek ? `<span class="you-are-here">← YOU ARE HERE</span>` : ""}</td>
+        <td>${wk.dates}</td>
+        <td>${wk.activity}</td>
+        <td>${wk.output}</td>
+        <td>${wk.lucian}</td>
+        <td>${wk.td}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderUpmDeliverables() {
+    const grid = document.getElementById("upm-grid");
+    grid.innerHTML = "";
+    UPM_DELIVERABLES.forEach(upm => {
+      const status = getUpmStatus(upm);
+      const pillMap = {
+        pending: ["pill-pending", "Pending"],
+        inprogress: ["pill-inprogress", "In Progress"],
+        done: ["pill-done", "Done"],
+      };
+      const [pillCls, pillText] = pillMap[status];
+      const card = document.createElement("div");
+      card.className = `upm-card status-${status}`;
+      card.innerHTML = `
+        <div class="upm-card-header">
+          <h3>${upm.title}</h3>
+          <span class="status-pill ${pillCls}">${pillText}</span>
+        </div>
+        <div class="upm-week">${upm.weeks}</div>
+        <div class="upm-why">${upm.why}</div>
+        <ul class="upm-scope">${upm.scope.map(s => `<li>${s}</li>`).join("")}</ul>
+        <div class="upm-exit"><strong>Exit condition:</strong> ${upm.exit}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderGraduationSignals() {
+    const list = document.getElementById("grad-list");
+    const signals = [
+      "Creates a UPM from scratch (TDN → implementation → merged PR) without Lucian defining the API.",
+      "Last two PRs pass review with no major rework — suggestions and nitpicks are acceptable.",
+      "At the demo, explains architectural decisions with <em>why</em> reasoning — not \"Lucian said to\".",
+      "UCB produces a green Windows IL2CPP build with no manual intervention.",
+    ];
+    list.innerHTML = signals.map((s, i) =>
+      `<li><span class="grad-num">${i + 1}</span><span>${s}</span></li>`
+    ).join("");
+  }
+</script>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <h1>Lee Kang @ Kurechii — Internship Plan</h1>
+    <p class="subtitle">Jun 8 – Sep 7, 2026 &nbsp;·&nbsp; Mentor: Lucian</p>
+    <div id="week-badge" class="week-badge">Week 1 of 13</div>
+    <div id="progress-bar" class="progress-bar"></div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ── THIS WEEK ── -->
+  <h2>This Week</h2>
+  <div id="this-week-card" class="this-week-card"></div>
+
+  <!-- ── GAME CONCEPT ── -->
+  <h2>Game Concept</h2>
+  <div id="concept-card" class="concept-card">
+    <div class="concept-header">
+      <h3>Standalone Windows game using Kurechii UPMs</h3>
+      <span id="concept-pill" class="status-pill pill-pending">Pending</span>
+    </div>
+    <p style="font-size:0.85rem;color:var(--grey-muted);margin-bottom:12px">
+      Submit a one-pager to Lucian by end of Week 2. Must satisfy all criteria below before game code starts.
+    </p>
+    <ul class="criteria-list">
+      <li><strong>Scope</strong> — Playable solo in under 5 min. Buildable solo in 3 months. No backend, no multiplayer.</li>
+      <li><strong>UPM coverage</strong> — Uses almost all UPMs. Any exclusion must be named and justified. (Acceptable to exclude: in-app purchase, ads, game subscription.) Every included UPM must be used meaningfully.</li>
+      <li><strong>Complexity floor</strong> — Requires object spawning (to justify pooling), a state machine, UI, audio, input, save/load. One playable loop completable in a 5-min demo.</li>
+      <li><strong>Evaluation question</strong> — "Would a senior dev look at this and say: yes, this game needed all these systems?"</li>
+    </ul>
+  </div>
+
+  <!-- ── 13-WEEK SCHEDULE ── -->
+  <h2>13-Week Schedule</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Dates</th>
+          <th>Activity</th>
+          <th>Output</th>
+          <th>Lucian</th>
+          <th>TD</th>
+        </tr>
+      </thead>
+      <tbody id="schedule-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- ── UPM DELIVERABLES ── -->
+  <h2>UPM Deliverables</h2>
+  <div id="upm-grid" class="upm-grid"></div>
+
+  <!-- ── CUT LINES ── -->
+  <h2>Pre-agreed Cut Lines</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Trigger</th>
+          <th>Cut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Game concept not approved by end of Week 2</td><td>TD decides: extend approval window or assign a concept.</td></tr>
+        <tr><td>UPM 1 not merged by end of Week 4</td><td>Drop loading overlay from UPM 2. Ship 2 widgets.</td></tr>
+        <tr><td>UCB not green by end of Week 5</td><td>Defer UCB to Week 8. Keep building; fix IL2CPP issues in parallel.</td></tr>
+        <tr><td>UPM 2 not merged by end of Week 8</td><td>UPM 3 drops Steam bridge and analytics hook. Core persistence + display still ships.</td></tr>
+        <tr><td>UPM 3 not merged by end of Week 12</td><td>Week 13 demo covers UPM 1 + 2 + partial UPM 3. Two solid UPMs = successful internship.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── GRADUATION SIGNALS ── -->
+  <h2>Graduation Signals</h2>
+  <p style="font-size:0.875rem;color:var(--grey-muted);margin-bottom:12px">All four must be demonstrated <strong>unprompted</strong> by end of Week 13.</p>
+  <ul id="grad-list" class="grad-list"></ul>
+
+  <!-- ── STANDARDS (collapsible) ── -->
+  <h2>Reference Implementation Standards</h2>
+  <details>
+    <summary>What "Reference Implementation" Means</summary>
+    <div class="standards-body">
+      <p style="font-size:0.875rem;color:var(--text-light);margin-bottom:12px">
+        The game should make a senior dev look at it and say: <em>"this is the right way to build something."</em>
+      </p>
+      <h4>Object & Memory</h4>
+      <ul>
+        <li>Every GameObject that spawns has a pool.</li>
+        <li>No <code>new</code> allocations in hot paths (Update, physics callbacks, frequently-called coroutines).</li>
+      </ul>
+      <h4>Unity Lifecycle</h4>
+      <ul>
+        <li>No logic in constructors. No cross-frame side effects in Awake.</li>
+        <li>Dependencies injected — not resolved with Find or GetComponent in Update.</li>
+      </ul>
+      <h4>Architecture</h4>
+      <ul>
+        <li>Systems are decoupled — audio doesn't know about gameplay, UI doesn't know about game logic.</li>
+        <li>Code reads like documentation — names describe intent, methods do one thing.</li>
+      </ul>
+      <h4>Build Quality</h4>
+      <ul>
+        <li>UCB produces a clean Windows IL2CPP build. If it only runs in the editor, it doesn't count.</li>
+        <li>link.xml stub in place to prevent IL2CPP stripping (expand per UPM).</li>
+      </ul>
+      <h4>Package Standards (per UPM)</h4>
+      <ul>
+        <li>TDN (Technical Design Note) approved by Lucian before any code is written.</li>
+        <li>Lucian rejects bug reports missing: severity (1–3), reproducibility (always/sometimes/once), steps-to-reproduce.</li>
+        <li>After each UPM integration: write a structured note — 3 things that worked, 2 friction points, 1 suggestion.</li>
+        <li>API documentation is Lee Kang's responsibility for every UPM he integrates.</li>
+      </ul>
+    </div>
+  </details>
+
+  <footer>
+    Lee Kang @ Kurechii &nbsp;·&nbsp; Jun 8 – Sep 7, 2026 &nbsp;·&nbsp; To advance progress: update <code>CURRENT_WEEK</code> in index.html and push.
+  </footer>
+
+</div>
+</body>
+</html>
