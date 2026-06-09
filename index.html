@@ -384,7 +384,7 @@
         goal: "Environment ready, team context absorbed, first task submitted",
         days: [
           { day: "Mon Jun 8", owner: "TD", tasks: "Standup intro · Admin setup (email, GitHub, Chat) · Hand onboarding checklist · Lucian 1-on-1 · Play Kurechii games · Read Engineering Philosophy · Assign Pragmatic Programmer §1" },
-          { day: "Tue Jun 9", owner: "Lucian", tasks: "Unity Hub + Editor install · Rider + Fork setup · Clone UPM repo · Walk through one existing UPM (read-only) · Start Atlassian Git tutorial" },
+          { day: "Tue Jun 9", owner: "Lucian", tasks: "Unity Hub + Editor install · Rider + Fork setup · Brief: Unity Coding Standards (naming conventions) · Assigned task: Unity naming convention example project <a href='https://github.com/k-external-001/unity-example-coding-convention' target='_blank' style='color:var(--orange);text-decoration:none;font-weight:700'>↗ repo</a>", today: true },
           { day: "Wed Jun 10", owner: "Lucian", tasks: "Explain Standard Task Workflow · Assign first task: write Git pull guide (markdown, clear enough for a non-dev) · TD informal 10-min check-in" },
           { day: "Thu Jun 11", owner: "Lucian", tasks: "Lee Kang submits first draft · Lucian reviews with Conventional Comments · Lee Kang revises · 1-hr pair: walk through one UPM package together" },
           { day: "Fri Jun 12", owner: "TD", tasks: "Lee Kang submits final doc · TD 20-min Week 1 retro (4 questions + Pragmatic Programmer check + game empathy check) · TD 10-min Lucian check-in · Set Week 2 goal" },
@@ -529,8 +529,10 @@
 
     if (wk.week === 1 && wk.detail) {
       const dayRows = wk.detail.days.map(d =>
-        `<tr>
-          <td style="font-size:0.82rem;font-weight:700;white-space:nowrap;padding:7px 10px">${d.day}</td>
+        `<tr${d.today ? " style=\"background:rgba(249,115,22,0.10);\"" : ""}>
+          <td style="font-size:0.82rem;font-weight:700;white-space:nowrap;padding:7px 10px${d.today ? ";border-left:3px solid var(--orange)" : ""}">
+            ${d.day}${d.today ? "<span style=\"font-size:0.65rem;font-weight:700;color:var(--orange);background:#fff;border:1px solid var(--orange-border);padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:middle\">TODAY</span>" : ""}
+          </td>
           <td style="font-size:0.75rem;color:var(--grey-muted);padding:7px 10px">${d.owner}</td>
           <td style="font-size:0.82rem;padding:7px 10px;color:var(--text-light)">${d.tasks}</td>
         </tr>`
