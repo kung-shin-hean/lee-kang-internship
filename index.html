@@ -364,7 +364,7 @@
 
 <script>
   // ── TD updates these to advance progress ──────────────────────────────────
-  const CURRENT_WEEK = 1;
+  const CURRENT_WEEK = 2;
   const GAME_CONCEPT_APPROVED = false;
   const UCB_GREEN = false;
   // ─────────────────────────────────────────────────────────────────────────
@@ -391,7 +391,25 @@
         ]
       }
     },
-    { week: 2, dates: "Jun 15–19", activity: "UPM inventory + game concept", output: "UPM inventory doc. Game concept one-pager submitted.", lucian: "Approve game concept by end of week.", td: "Spot-check UPM inventory. Approve concept." },
+    {
+      week: 2,
+      dates: "Jun 15–19",
+      activity: "Input Binding Preset TDN + game concept",
+      output: "Input Binding Preset TDN approved. Game concept one-pager submitted.",
+      lucian: "Walk Lee Kang through existing input binding UPM. Gate: approve TDN before implementation. Approve or feedback game concept by Friday EOD.",
+      td: "Week 1 retro (Mon). Share Input Binding Preset spec. Spot-check week 1 UPM quality (Fri).",
+      detail: {
+        focus: "First production-relevant UPM feature — spec-driven, TDN-gated",
+        goal: "TDN approved for Input Binding Preset. Game concept one-pager submitted.",
+        days: [
+          { day: "Mon Jun 15", owner: "Kung", tasks: "Week 1 retro (20 min) — review screenshot + bowling pin scorer, ask: 'what felt hard, what felt easy?' · Introduce week 2 focus: UPMs production games actually need · Share Input Binding Preset spec · Assign: read the existing input binding UPM README before writing anything", today: true },
+          { day: "Tue Jun 16", owner: "Lucian", tasks: "Walk Lee Kang through existing input binding UPM — how PKW/ASW consume it, current pain points · Lee Kang begins TDN draft for preset feature · Lee Kang begins game concept one-pager (async, parallel)" },
+          { day: "Wed Jun 17", owner: "Lucian", tasks: "Lee Kang submits TDN draft to Lucian · Lucian reviews with Conventional Comments · Lee Kang revises TDN · Continue game concept one-pager" },
+          { day: "Thu Jun 18", owner: "Lucian", tasks: "TDN approved (gate) → Lee Kang begins implementation · Lee Kang submits game concept one-pager to Lucian for review" },
+          { day: "Fri Jun 19", owner: "Kung", tasks: "Lucian approves or gives written feedback on game concept by EOD · TD spot-check: read week 1 UPMs (screenshot + bowling pin scorer), note quality observations · Set Week 3 direction with Lucian" },
+        ]
+      }
+    },
     { week: 3, dates: "Jun 22–26", activity: "Hello World UPM (Mon–Tue) → Screenshot TDN (Wed–Fri)", output: "Working local package + TDN approved", lucian: "Show package structure once (30 min). Gate: approve TDN before coding.", td: "—" },
     { week: 4, dates: "Jun 29–Jul 3", activity: "UPM 1: Build", output: "ScreenshotManager + config working, sample scene", lucian: "Async unblock + end-of-week PR review", td: "—" },
     { week: 5, dates: "Jul 6–10", activity: "UPM 1: Integrate + UCB setup + UPM 2 TDN", output: "UPM 1 on git URL, merged (F12 hotkey). UCB Windows build green. UPM 2 TDN written.", lucian: "Approve UPM 1 PR. Review UPM 2 TDN. Confirm UCB build.", td: "~15 min async read of UPM 2 TDN" },
@@ -527,7 +545,7 @@
     const wk = WEEKS.find(w => w.week === CURRENT_WEEK) || WEEKS[0];
     const card = document.getElementById("this-week-card");
 
-    if (wk.week === 1 && wk.detail) {
+    if (wk.detail) {
       const dayRows = wk.detail.days.map(d =>
         `<tr${d.today ? " style=\"background:rgba(249,115,22,0.10);\"" : ""}>
           <td style="font-size:0.82rem;font-weight:700;white-space:nowrap;padding:7px 10px${d.today ? ";border-left:3px solid var(--orange)" : ""}">
