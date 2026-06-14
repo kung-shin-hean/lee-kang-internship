@@ -342,6 +342,35 @@
       font-size: 0.75rem;
     }
 
+    /* ── Standing meetings ── */
+    .meeting-card {
+      border: 1px solid var(--grey-border);
+      border-radius: 8px;
+      padding: 18px 22px;
+    }
+    .meeting-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .meeting-title { font-weight: 700; font-size: 0.95rem; }
+    .meeting-cadence { font-size: 0.82rem; color: var(--grey-muted); }
+    .meeting-purpose { font-size: 0.875rem; color: var(--text-light); margin-bottom: 12px; }
+    .meeting-dates { display: flex; flex-wrap: wrap; gap: 6px; }
+    .meeting-date {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--grey-bg);
+      border: 1px solid var(--grey-border);
+      color: var(--text-light);
+    }
+    .meeting-date.past { opacity: 0.45; }
+    .meeting-date.current { background: var(--orange-light); border-color: var(--orange-border); color: #c2410c; }
+
     /* ── Footer ── */
     footer {
       margin-top: 48px;
@@ -406,7 +435,7 @@
           { day: "Tue Jun 16", owner: "Lucian", tasks: "Walk Lee Kang through existing input binding UPM — how PKW/ASW consume it, current pain points · Lee Kang begins TDN draft for preset feature · Lee Kang begins game concept one-pager (async, parallel)" },
           { day: "Wed Jun 17", owner: "Lucian", tasks: "Lee Kang submits TDN draft to Lucian · Lucian reviews with Conventional Comments · Lee Kang revises TDN · Continue game concept one-pager" },
           { day: "Thu Jun 18", owner: "Lucian", tasks: "TDN approved (gate) → Lee Kang begins implementation · Lee Kang submits game concept one-pager to Lucian for review" },
-          { day: "Fri Jun 19", owner: "Kung", tasks: "Lucian approves or gives written feedback on game concept by EOD · TD spot-check: read week 1 UPMs (screenshot + bowling pin scorer), note quality observations · Set Week 3 direction with Lucian" },
+          { day: "Fri Jun 19", owner: "Kung", tasks: "TD × Lee Kang 1-on-1 2:15–2:45pm — feedback + friction · Lucian approves or gives written feedback on game concept by EOD · TD spot-check: read week 1 UPMs (screenshot + bowling pin scorer), note quality observations · Set Week 3 direction with Lucian" },
         ]
       }
     },
@@ -503,6 +532,22 @@
     },
   ];
 
+  const MEETINGS = [
+    {
+      title: "TD × Lee Kang 1-on-1",
+      cadence: "Biweekly · Fridays 2:15–2:45pm",
+      purpose: "Unfiltered feedback, friction, and questions — not status.",
+      occurrences: [
+        { date: "Fri Jun 19", week: 2 },
+        { date: "Fri Jul 3",  week: 4 },
+        { date: "Fri Jul 17", week: 6 },
+        { date: "Fri Jul 31", week: 8 },
+        { date: "Fri Aug 14", week: 10 },
+        { date: "Fri Aug 28", week: 12 },
+      ],
+    },
+  ];
+
   // Derive UPM status from current week
   function getUpmStatus(upm) {
     const [start, end] = upm.weekRange;
@@ -522,6 +567,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     renderHeader();
     renderThisWeek();
+    renderMeetings();
     renderGameConcept();
     renderSchedule();
     renderUpmDeliverables();
@@ -652,6 +698,25 @@
     });
   }
 
+  function renderMeetings() {
+    const container = document.getElementById("meetings-container");
+    container.innerHTML = MEETINGS.map(m => {
+      const pills = m.occurrences.map(o => {
+        const cls = o.week < CURRENT_WEEK ? "past" : o.week === CURRENT_WEEK ? "current" : "upcoming";
+        return `<span class="meeting-date ${cls}">${o.date}</span>`;
+      }).join("");
+      return `
+        <div class="meeting-card">
+          <div class="meeting-meta">
+            <span class="meeting-title">${m.title}</span>
+            <span class="meeting-cadence">${m.cadence}</span>
+          </div>
+          <p class="meeting-purpose">${m.purpose}</p>
+          <div class="meeting-dates">${pills}</div>
+        </div>`;
+    }).join("");
+  }
+
   function renderGraduationSignals() {
     const list = document.getElementById("grad-list");
     const signals = [
@@ -681,6 +746,10 @@
   <!-- ── THIS WEEK ── -->
   <h2>This Week</h2>
   <div id="this-week-card" class="this-week-card"></div>
+
+  <!-- ── STANDING MEETINGS ── -->
+  <h2>Standing Meetings</h2>
+  <div id="meetings-container"></div>
 
   <!-- ── GAME CONCEPT ── -->
   <h2>Game Concept</h2>
